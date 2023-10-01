@@ -1,0 +1,18 @@
+<!-- habits/templates/goal_setting.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Goal Setting - {{ habit.name }}</title>
+</head>
+<body>
+    <h1>Goal Setting - {{ habit.name }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <!-- Add form fields for setting goals, e.g., target days per week or quantity -->
+        <label for="target">Target:</label>
+        <input type="text" id="target" name="target" placeholder="Enter your goal">
+        <button type="submit">Set Goal</button>
+    </form>
+</body>
+</html>

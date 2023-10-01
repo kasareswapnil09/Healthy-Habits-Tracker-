@@ -1,0 +1,68 @@
+<!-- habits/templates/login.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <style>
+        /* Add your custom styles for registration form here */
+
+.container {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.delete-heading {
+  font-size: 24px;
+  margin: 0;
+  padding: 20px;
+  background-color: #DC3545;
+  color: white;
+  text-align: center;
+}
+
+.delete-form {
+  text-align: center;
+}
+
+.delete-button {
+  background-color: #DC3545;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.delete-button:hover {
+  background-color: #C82333;
+}
+
+.delete-paragraph {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.delete-link {
+  text-decoration: none;
+  color: #007BFF;
+  margin-left: 10px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="delete-heading">Login</h2>
+        <form class="delete-form" method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button class="delete-button" type="submit">Login</button>
+        </form>
+        <p class="delete-paragraph">Don't have an account? <a class="delete-link" href="{% url 'register' %}">Register here</a></p>
+      </div>
+</body>
+</html>

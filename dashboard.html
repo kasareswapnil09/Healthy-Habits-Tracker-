@@ -1,0 +1,197 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Healthy Habits Tracker</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+       /* Reset some default styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+/* Page title style */
+h1 {
+    background-color: #007BFF;
+    color: white;
+    padding: 20px;
+    margin: 0;
+    display: flex; /* Use flexbox for alignment */
+    justify-content: space-between; /* Space-between alignment */
+}
+
+/* Logout button style */
+.logout-button a {
+    color: white; /* Button text color */
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 20px; /* Add some spacing to the right */
+}
+
+/* Container for the dashboard content */
+.crud-table {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Create button style */
+.create-button {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+/* Table style */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Visualization section style */
+.tracker-graph {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tracker-graph h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+/* Chart style */
+#habitTrackingChart {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin: 0 auto;
+}
+
+/* No data message style */
+#noDataMessage {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    margin-top: 10px;
+}
+
+    </style>
+</head>
+<body>
+    <!-- Your other dashboard content here -->
+    <h1>
+        Welcome, {{ user.username }}
+        <div class="logout-button">
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </h1>
+
+    <!-- CRUD table -->
+    <div class="crud-table">
+        <h2>Healthy Habits Tracker</h2>
+        <a href="{% url 'habit_create' %}" class="create-button">Create Habit</a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Goal</th>
+                    <th>Frequency</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Populate the table with habit data dynamically -->
+                {% for habit in habits %}
+                    <tr>
+                        <td>{{ habit.name }}</td>
+                        <td>{{ habit.description }}</td>
+                        <td>{{ habit.goal }}</td>
+                        <td>{{ habit.frequency }}</td>
+                        <td>
+                            <a href="{% url 'habit_edit' habit.id %}">Edit</a>
+                            <a href="{% url 'habit_delete' habit.id %}">Delete</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">No habits yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="tracker-graph">
+        <h2>Your Habit Tracking</h2>
+        <canvas id="habitTrackingChart" width="400" height="200"></canvas>
+        <!-- Handle the case when habit_data_json is not available or empty -->
+        <div id="noDataMessage">
+            {% if not habit_data_json %}
+                <p>No habit tracking data available.</p>
+            {% endif %}
+        </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Check if habit_data_json is available and not empty
+                const habitData = JSON.parse('{{ habit_data_json|escapejs }}');
+    
+                // Extract labels and data from the habitData JSON
+                const labels = habitData.map(habit => habit.habit_name);
+                const completedCounts = habitData.map(habit => habit.completed_count);
+    
+                // Create a chart using Chart.js
+                const ctx = document.getElementById("habitTrackingChart").getContext("2d");
+                const habitTrackingChart = new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Completed Habits",
+                            data: completedCounts,
+                            backgroundColor: "rgba(75, 192, 192, 0.2)", // Bar color
+                            borderColor: "rgba(75, 192, 192, 1)", // Border color
+                            borderWidth: 1,
+                        }],
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                            },
+                        },
+                    },
+                });
+               
+    
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Habit Tracking</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+</head>
+<body>
+    <h1>Habit Tracking</h1>
+    <canvas id="habitChart" width="400" height="200"></canvas>
+    <script>
+        const habitData = {{ habit_data_json|safe }};
+        const habitNames = habitData.map(data => data.habit_name);
+        const completedCounts = habitData.map(data => data.completed_count);
+        const goalCounts = habitData.map(data => data.goal);
+
+        const ctx = document.getElementById('habitChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: habitNames,
+                datasets: [
+                    {
+                        label: 'Completed',
+                        backgroundColor: 'green',
+                        data: completedCounts,
+                    },
+                    {
+                        label: 'Goal',
+                        backgroundColor: 'blue',
+                        data: goalCounts,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true },
+                },
+            },
+        });
+    </script>
+</body>
+</html>
